@@ -20,51 +20,65 @@ Vagrant.configure("2") do |config|
   # config.vm.box = "hashicorp/precise64"
   
   config.vm.define "kmaster" do |master|
-	master.vm.define "kmaster"
-	master.vm.box = "generic/ubuntu1804"
-	master.vm.network "private_network", ip: "192.168.56.100"
-	
-	#master.vm.host_name = "node"
-	#master.ssh.username = "node"
-	
-	#master.ssh.insert_key = false
+    master.vm.define "kmaster"
+    master.vm.box = "generic/ubuntu1804"
+    master.vm.network "private_network", ip: "192.168.56.100"
+    
+    #master.vm.host_name = "node"
+    #master.ssh.username = "node"
+    
+    #master.ssh.insert_key = false
     #master.ssh.private_key_path = ['~/.vagrant.d/insecure_private_key']
     #master.vm.provision "file", source: "~/.vagrant.d/insecure_public_key.pub", destination: "/home/node/.ssh/authorized_keys"
-	
-	#master.vm.provision "shell", inline: $script
-	config.vm.provision :shell, path: "./install-docker-ce.sh"
-	
-	master.vm.provider :virtualbox do |vb|
+    
+    #master.vm.provision "shell", inline: $script
+    master.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
+    master.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
+    master.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
+    master.vm.provision "master", type: "shell", path: "./start-k8s-master.sh"
+    master.vm.provision "proxy", type: "shell", path: "./proxy.sh", run: "always"
+
+    master.vm.provider :virtualbox do |vb|
       vb.name = "kmaster"
-	  vb.memory = "4096"
-	  vb.cpus = "2"
-	  vb.customize ["modifyvm", :id, "--groups", "/vagrant cluster"]
-    end
+      vb.memory = "4096"
+      vb.cpus = "2"
+      vb.customize ["modifyvm", :id, "--groups", "/vagrant cluster"]
+      end
   end
   
   config.vm.define "knode1" do |node1|
-	node1.vm.define "knode1"
+    node1.vm.define "knode1"
     node1.vm.box = "generic/ubuntu1804"
-	node1.vm.network "private_network", ip: "192.168.56.101"
-	
-	node1.vm.provider :virtualbox do |vb|
+    node1.vm.network "private_network", ip: "192.168.56.101"
+    
+    node1.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
+    node1.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
+    node1.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
+    node1.vm.provision "proxy", type: "shell", path: "./proxy.sh", run: "always"
+
+    node1.vm.provider :virtualbox do |vb|
       vb.name = "knode1"
-	  vb.memory = "4096"
-	  vb.cpus = "1"
-	  vb.customize ["modifyvm", :id, "--groups", "/vagrant cluster"]
+      vb.memory = "4096"
+      vb.cpus = "1"
+      vb.customize ["modifyvm", :id, "--groups", "/vagrant cluster"]
     end
   end
   
   config.vm.define "knode2" do |node2|
-	node2.vm.define "knode2"
+    node2.vm.define "knode2"
     node2.vm.box = "generic/ubuntu1804"
-	node2.vm.network "private_network", ip: "192.168.56.102"
-	
-	node2.vm.provider :virtualbox do |vb|
+    node2.vm.network "private_network", ip: "192.168.56.102"
+    
+    node2.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
+    node2.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
+    node2.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
+    node2.vm.provision "proxy", type: "shell", path: "./proxy.sh", run: "always"
+
+    node2.vm.provider :virtualbox do |vb|
       vb.name = "knode2"
-	  vb.memory = "4096"
-	  vb.cpus = "1"
-	  vb.customize ["modifyvm", :id, "--groups", "/vagrant cluster"]
+      vb.memory = "4096"
+      vb.cpus = "1"
+      vb.customize ["modifyvm", :id, "--groups", "/vagrant cluster"]
     end
   end
 
