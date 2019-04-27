@@ -24,3 +24,6 @@ sudo cat <<EOF >/etc/systemd/system/docker.service.d/http-proxy.conf
 Environment="HTTP_PROXY=http://192.168.56.1:1080/"
 Environment="HTTPS_PROXY=http://192.168.56.1:1080/"
 EOF
+
+sudo systemctl daemon-reload
+sudo systemctl restart docker

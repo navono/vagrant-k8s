@@ -10,6 +10,9 @@ $script = <<-SCRIPT
 echo I am provisioning...
 SCRIPT
 
+IMAGE_NAME = "generic/ubuntu1804"
+N = 2
+
 Vagrant.configure("2") do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
@@ -21,8 +24,12 @@ Vagrant.configure("2") do |config|
   
   config.vm.define "kmaster" do |master|
     master.vm.define "kmaster"
-    master.vm.box = "generic/ubuntu1804"
+    master.vm.box = IMAGE_NAME
     master.vm.network "private_network", ip: "192.168.56.100"
+
+    # need install plugin
+    # vagrant plugin install vagrant-disksize
+    master.disksize.size = '150GB'
     
     #master.vm.host_name = "node"
     #master.ssh.username = "node"
@@ -42,43 +49,31 @@ Vagrant.configure("2") do |config|
       vb.name = "kmaster"
       vb.memory = "4096"
       vb.cpus = "2"
-      vb.customize ["modifyvm", :id, "--groups", "/vagrant cluster"]
+      vb.customize ["modifyvm", :id, "--groups", "/k8s cluster"]
       end
   end
-  
-  config.vm.define "knode1" do |node1|
-    node1.vm.define "knode1"
-    node1.vm.box = "generic/ubuntu1804"
-    node1.vm.network "private_network", ip: "192.168.56.101"
-    
-    node1.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
-    node1.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
-    node1.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
-    node1.vm.provision "proxy", type: "shell", path: "./proxy.sh", run: "always"
 
-    node1.vm.provider :virtualbox do |vb|
-      vb.name = "knode1"
-      vb.memory = "4096"
-      vb.cpus = "1"
-      vb.customize ["modifyvm", :id, "--groups", "/vagrant cluster"]
-    end
-  end
-  
-  config.vm.define "knode2" do |node2|
-    node2.vm.define "knode2"
-    node2.vm.box = "generic/ubuntu1804"
-    node2.vm.network "private_network", ip: "192.168.56.102"
-    
-    node2.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
-    node2.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
-    node2.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
-    node2.vm.provision "proxy", type: "shell", path: "./proxy.sh", run: "always"
+  (1..N).each do |i|
+    config.vm.define "knode-#{i}" do |node|
+      node.vm.box = IMAGE_NAME
+      node.vm.network "private_network", ip: "192.168.56.#{i + 100}"
+      node.vm.hostname = "node-#{i}"
 
-    node2.vm.provider :virtualbox do |vb|
-      vb.name = "knode2"
-      vb.memory = "4096"
-      vb.cpus = "1"
-      vb.customize ["modifyvm", :id, "--groups", "/vagrant cluster"]
+      # need install plugin
+      # vagrant plugin install vagrant-disksize
+      master.disksize.size = '150GB'
+
+      node1.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
+      node1.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
+      node1.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
+      node1.vm.provision "proxy", type: "shell", path: "./proxy.sh", run: "always"
+  
+      node1.vm.provider :virtualbox do |vb|
+        vb.name = "node-#{i}"
+        vb.memory = "4096"
+        vb.cpus = "1"
+        vb.customize ["modifyvm", :id, "--groups", "/k8s cluster"]
+      end
     end
   end
 

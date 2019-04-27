@@ -25,6 +25,6 @@ curl https://docs.projectcalico.org/v3.6/getting-started/kubernetes/installation
 echo "Modify calico.yaml in the ConfigMap with etcd server ip and port..."
 echo "and then `kubectl apply -f calico.yaml`"
 // aplly calico
-#kubectl apply -f calico.yaml
+kubectl apply -f calico.yaml
 
 #kubectl taint nodes --all node-role.kubernetes.io/master-
