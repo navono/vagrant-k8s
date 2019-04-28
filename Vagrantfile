@@ -33,9 +33,9 @@ Vagrant.configure("2") do |config|
   #config.vm.synced_folder ".", "/vagrant", type: "nfs", nfs_udp: false
   
   config.vm.define "kmaster" do |master|
-    master.vm.define "kmaster"
     master.vm.box = IMAGE_NAME
     master.vm.network "private_network", ip: "192.168.56.100"
+    master.vm.hostname = "kmaster"
 
     # need install plugin
     # vagrant plugin install vagrant-disksize
