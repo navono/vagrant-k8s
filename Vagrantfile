@@ -21,6 +21,16 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
   # config.vm.box = "hashicorp/precise64"
+
+  # need install plugin
+  # vagrant plugin install vagrant-proxyconf
+  # if Vagrant.has_plugin?("vagrant-proxyconf")
+  #   config.proxy.http     = "http://192.168.56.1:8118/"
+  #   config.proxy.https    = "http://192.168.56.1:8118/"
+  #   config.proxy.no_proxy = "localhost,127.0.0.1,.example.com"
+  # end
+
+  #config.vm.synced_folder ".", "/vagrant", type: "nfs", nfs_udp: false
   
   config.vm.define "kmaster" do |master|
     master.vm.define "kmaster"
@@ -30,26 +40,17 @@ Vagrant.configure("2") do |config|
     # need install plugin
     # vagrant plugin install vagrant-disksize
     master.disksize.size = '150GB'
-    
-    #master.vm.host_name = "node"
-    #master.ssh.username = "node"
-    
-    #master.ssh.insert_key = false
-    #master.ssh.private_key_path = ['~/.vagrant.d/insecure_private_key']
-    #master.vm.provision "file", source: "~/.vagrant.d/insecure_public_key.pub", destination: "/home/node/.ssh/authorized_keys"
-    
-    #master.vm.provision "shell", inline: $script
-    master.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
-    master.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
-    master.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
-    master.vm.provision "master", type: "shell", path: "./start-k8s-master.sh"
-    master.vm.provision "proxy", type: "shell", path: "./proxy.sh", run: "always"
+        
+    # master.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
+    # master.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
+    # master.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
+    # master.vm.provision "master", type: "shell", path: "./start-k8s-master.sh"
 
     master.vm.provider :virtualbox do |vb|
       vb.name = "kmaster"
       vb.memory = "4096"
       vb.cpus = "2"
-      vb.customize ["modifyvm", :id, "--groups", "/k8s cluster"]
+      vb.customize ["modifyvm", :id, "--groups", "/cluster"]
       end
   end
 
@@ -61,18 +62,17 @@ Vagrant.configure("2") do |config|
 
       # need install plugin
       # vagrant plugin install vagrant-disksize
-      master.disksize.size = '150GB'
+      node.disksize.size = '150GB'
 
-      node1.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
-      node1.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
-      node1.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
-      node1.vm.provision "proxy", type: "shell", path: "./proxy.sh", run: "always"
+      # node.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
+      # node.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
+      # node.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
   
-      node1.vm.provider :virtualbox do |vb|
+      node.vm.provider :virtualbox do |vb|
         vb.name = "node-#{i}"
         vb.memory = "4096"
         vb.cpus = "1"
-        vb.customize ["modifyvm", :id, "--groups", "/k8s cluster"]
+        vb.customize ["modifyvm", :id, "--groups", "/cluster"]
       end
     end
   end

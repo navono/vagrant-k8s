@@ -10,7 +10,7 @@ echo "Staring cluster master ..."
 sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=192.168.56.100
 
 # flannel
-#sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.200.111
+#sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.56.100
 
 echo "Apply config ..."	
 mkdir -p $HOME/.kube
@@ -24,7 +24,9 @@ curl https://docs.projectcalico.org/v3.6/getting-started/kubernetes/installation
 
 echo "Modify calico.yaml in the ConfigMap with etcd server ip and port..."
 echo "and then `kubectl apply -f calico.yaml`"
-// aplly calico
-kubectl apply -f calico.yaml
+# aplly calico
+# kubectl apply -f calico.yaml
+
+kubectl apply -f https://docs.projectcalico.org/v3.6/getting-started/kubernetes/installation/hosted/calico.yaml
 
 #kubectl taint nodes --all node-role.kubernetes.io/master-

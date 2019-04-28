@@ -21,9 +21,9 @@ sudo usermod -aG docker $USER
 sudo mkdir -p /etc/systemd/system/docker.service.d
 sudo cat <<EOF >/etc/systemd/system/docker.service.d/http-proxy.conf
 [Service]
-Environment="HTTP_PROXY=http://192.168.56.1:1080/"
-Environment="HTTPS_PROXY=http://192.168.56.1:1080/"
+Environment="HTTP_PROXY=http://192.168.56.1:8118/"
+Environment="HTTPS_PROXY=http://192.168.56.1:8118/"
 EOF
 
-sudo systemctl daemon-reload
+sudo systemctl restart daemon-reload
 sudo systemctl restart docker
