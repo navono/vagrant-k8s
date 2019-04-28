@@ -25,5 +25,5 @@ Environment="HTTP_PROXY=http://192.168.56.1:8118/"
 Environment="HTTPS_PROXY=http://192.168.56.1:8118/"
 EOF
 
-sudo systemctl restart daemon-reload
+sudo systemctl daemon-reload
 sudo systemctl restart docker
