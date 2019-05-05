@@ -3,6 +3,9 @@
 
 echo Run k8s installation...
 
+export http_proxy='http://192.168.56.1:8118/'
+export https_proxy='http://192.168.56.1:8118/'
+
 sudo apt-get update && sudo apt-get install -y apt-transport-https
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 

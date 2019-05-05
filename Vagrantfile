@@ -32,22 +32,22 @@ Vagrant.configure("2") do |config|
 
   #config.vm.synced_folder ".", "/vagrant", type: "nfs", nfs_udp: false
   
-  config.vm.define "kmaster" do |master|
+  config.vm.define "master" do |master|
     master.vm.box = IMAGE_NAME
     master.vm.network "private_network", ip: "192.168.56.100"
-    master.vm.hostname = "kmaster"
+    master.vm.hostname = "master"
 
     # need install plugin
     # vagrant plugin install vagrant-disksize
     master.disksize.size = '150GB'
         
-    # master.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
-    # master.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
-    # master.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
+    master.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
+    master.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
+    master.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
     # master.vm.provision "master", type: "shell", path: "./start-k8s-master.sh"
 
     master.vm.provider :virtualbox do |vb|
-      vb.name = "kmaster"
+      vb.name = "master"
       vb.memory = "4096"
       vb.cpus = "2"
       vb.customize ["modifyvm", :id, "--groups", "/cluster"]
@@ -55,7 +55,7 @@ Vagrant.configure("2") do |config|
   end
 
   (1..N).each do |i|
-    config.vm.define "knode-#{i}" do |node|
+    config.vm.define "node-#{i}" do |node|
       node.vm.box = IMAGE_NAME
       node.vm.network "private_network", ip: "192.168.56.#{i + 100}"
       node.vm.hostname = "node-#{i}"
@@ -64,9 +64,9 @@ Vagrant.configure("2") do |config|
       # vagrant plugin install vagrant-disksize
       node.disksize.size = '150GB'
 
-      # node.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
-      # node.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
-      # node.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
+      node.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
+      node.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
+      node.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"
   
       node.vm.provider :virtualbox do |vb|
         vb.name = "node-#{i}"

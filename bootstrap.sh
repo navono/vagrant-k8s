@@ -9,7 +9,4 @@ sudo apt-get -y dist-upgrade
 sudo swapoff -a
 sudo sed -i '/swap/s/^/#/' /etc/fstab
 
-# commet swap
-# sudo vim /etc/fstab
-
 sudo apt-get install -y openssh-server
