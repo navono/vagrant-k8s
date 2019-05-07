@@ -20,7 +20,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 echo "Apply calico ..."
 # Installing with the etcd datastore
 # In the ConfigMap named calico-config, set the value of etcd_endpoints to the IP address and port of your etcd server.
-curl https://docs.projectcalico.org/v3.6/getting-started/kubernetes/installation/hosted/calico.yaml -O
+# curl https://docs.projectcalico.org/v3.6/getting-started/kubernetes/installation/hosted/calico.yaml -O
 
 echo "Modify calico.yaml in the ConfigMap with etcd server ip and port..."
 echo "and then `kubectl apply -f calico.yaml`"

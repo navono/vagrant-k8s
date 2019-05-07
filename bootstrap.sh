@@ -3,6 +3,9 @@
 
 echo Run bootstrap...
 
+export http_proxy='http://192.168.56.1:8118/'
+export https_proxy='http://192.168.56.1:8118/'
+
 sudo apt-get update
 sudo apt-get -y dist-upgrade
 

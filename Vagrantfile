@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
     # need install plugin
     # vagrant plugin install vagrant-disksize
     master.disksize.size = '150GB'
-        
+
     master.vm.provision "boot", type: "shell" , path: "./bootstrap.sh"
     master.vm.provision "docker", type: "shell", path: "./install-docker-ce.sh"
     master.vm.provision "k8s", type: "shell", path: "./install-k8s.sh"

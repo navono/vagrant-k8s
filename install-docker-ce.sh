@@ -28,7 +28,7 @@ Environment="HTTP_PROXY=http://192.168.56.1:8118/"
 Environment="HTTPS_PROXY=http://192.168.56.1:8118/"
 EOF
 
-sudo cat <<EOF >/etc/docker/daemon.json
+cat <<EOF >/etc/docker/daemon.json
 {
   "exec-opts": ["native.cgroupdriver=systemd"],
   "log-driver": "json-file",
