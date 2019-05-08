@@ -13,10 +13,8 @@ curl -fsSL https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg | sudo apt-key
 echo "Add docker version apt repo ..."
 sudo add-apt-repository "deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
 
-sudo apt-get update
-
 echo "Install docker-ce ..."
-sudo apt-get install -y docker-ce
+sudo apt-get update && sudo apt-get install -y docker-ce
 
 echo "Add current user to docker group"
 sudo usermod -aG docker $USER
