@@ -28,16 +28,16 @@ Environment="HTTP_PROXY=http://192.168.56.1:8118/"
 Environment="HTTPS_PROXY=http://192.168.56.1:8118/"
 EOF
 
-cat <<EOF >/etc/docker/daemon.json
-{
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "100m"
-  },
-  "storage-driver": "overlay2"
-}
-EOF
+# cat <<EOF >/etc/docker/daemon.json
+# {
+#   "exec-opts": ["native.cgroupdriver=systemd"],
+#   "log-driver": "json-file",
+#   "log-opts": {
+#     "max-size": "100m"
+#   },
+#   "storage-driver": "overlay2"
+# }
+# EOF
 
 sudo systemctl daemon-reload
 sudo systemctl restart docker
